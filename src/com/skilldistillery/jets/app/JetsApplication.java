@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.InputMismatchException;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
 
@@ -105,26 +106,37 @@ public class JetsApplication {
 	}
 
 	private void selectUserChoice(AirField airfield) {
+		//User choice in menus
 		int choice = 0;
+		//While menu is running
 		boolean isRunning = true;
+		
 		while (isRunning) {
 			//Show user Choice menu
 			presentUserChoiceMenu();
 			//get user choice validate input
 			choice = getUserSelection(input);
+			//Create Iterator for looping conditions
+			Iterator<Jet> it = createJetIterator(airfield);
+			
 			switch (choice) {
 			case 1:
 				airfield.listAllJetsInAirField();
 				break;
 			case 2:
+				airfield.flyAllJets();
 				break;
 			case 3:
+				airfield.fastestJet();
 				break;
 			case 4:
+				airfield.longestRangeJet();
 				break;
 			case 5:
+				fuelUpTheFleet(it);
 				break;
 			case 6:
+				dogFight(it);
 				break;
 			case 7:
 				break;
@@ -160,5 +172,32 @@ public class JetsApplication {
 			}
 		}
 		return userInput;
+	}
+	
+	private Iterator<Jet> createJetIterator(AirField airField){
+		List<Jet> getJets = airField.getJets();
+		Iterator<Jet> it = getJets.iterator();
+		
+		return it;
+	}
+	
+	private void fuelUpTheFleet(Iterator<Jet> it) {
+		while(it.hasNext()) {
+			Jet aJet = it.next();
+			if(aJet instanceof TankerJet) {
+				((TankerJet) aJet).refuel();
+				System.out.println();
+			}
+		}
+	}
+	
+	private void dogFight(Iterator<Jet> it) {
+		while(it.hasNext()) {
+			Jet aJet = it.next();
+			if(aJet instanceof FighterJet) {
+				((FighterJet) aJet).fight();
+				System.out.println();
+			}
+		}
 	}
 }

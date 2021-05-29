@@ -13,6 +13,7 @@ public class FighterJet extends Jet implements CombatReady {
 
 	public void fight() {
 		System.out.println("Im going to pull the airbrake and they will fly right by!");
+		System.out.println("TailNumber: " + getTailNumber() + " Successfully defeated the enemy requesting tower fly by..");
 	}
 
 	@Override

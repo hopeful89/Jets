@@ -12,7 +12,7 @@ public class TankerJet extends Jet implements IsATanker{
 	}
 
 	public void refuel() {
-		System.out.println("Lets go boys...dump it out...fill 'em up!");
+		System.out.println("TailNumber: " + getTailNumber() + " Lets go boys...dump it out...fill 'em up!");
 	}
 
 	@Override

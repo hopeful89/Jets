@@ -10,7 +10,6 @@ public abstract class Jet {
 	private int range;
 	private long price;
 
-
 	public Jet(String model, double speed, int range, long price) {
 		super();
 		this.tailNumber = numCreated;
@@ -21,15 +20,17 @@ public abstract class Jet {
 		numCreated++;
 	}
 
-
 	@Override
 	public String toString() {
 		return "Jet [tailNumber=" + tailNumber + ", model=" + model + ", speed=" + speed + ", range=" + range
 				+ ", price=" + price + "]";
 	}
 
-
 	public abstract void fly();
+
+	public void timeTilEmpty() {
+		System.out.printf("I am able to fly: %.2f hours before empty!\n", range / speed);
+	}
 
 	public String getModel() {
 		return model;
@@ -39,11 +40,9 @@ public abstract class Jet {
 		return tailNumber;
 	}
 
-
 	public void setTailNumber(int tailNumber) {
 		this.tailNumber = tailNumber;
 	}
-
 
 	public void setModel(String model) {
 		this.model = model;
@@ -77,7 +76,6 @@ public abstract class Jet {
 		return speed / machSpeed;
 	}
 
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -91,7 +89,6 @@ public abstract class Jet {
 		result = prime * result + tailNumber;
 		return result;
 	}
-
 
 	@Override
 	public boolean equals(Object obj) {
@@ -118,8 +115,4 @@ public abstract class Jet {
 		return true;
 	}
 
-
-
-
-	
 }

@@ -15,4 +15,11 @@ public class FighterJet extends Jet implements CombatReady {
 		System.out.println("Im going to pull the airbrake and they will fly right by!");
 	}
 
+	@Override
+	public String toString() {
+		return "FighterJet [getModel()=" + getModel() + ", getTailNumber()=" + getTailNumber() + ", getSpeed()="
+				+ getSpeed() + ", getRange()=" + getRange() + ", getPrice()=" + getPrice() + "]";
+	}
+
+
 }

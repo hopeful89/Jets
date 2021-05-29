@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -16,7 +17,7 @@ import com.skilldistillery.jets.entity.TankerJet;
 
 public class JetsApplication {
 
-	private AirField airField;
+	private AirField airField = new AirField();
 	private Scanner input = new Scanner(System.in);
 
 	public static void main(String[] args) {
@@ -25,37 +26,45 @@ public class JetsApplication {
 	}
 
 	private void start() {
+		// File name to read from
 		String fileName = "jets.txt";
-		AirField airField = new AirField();
 
+		// Pull in starter data from outside file
 		List<List<String>> jetStartInfo = pullJetInfoFromFile(fileName);
 
+		// Instantiates a List of jets
 		List<Jet> starterJets = createJetsFromData(jetStartInfo);
-		System.out.println(starterJets);
+
+		// Adds the starter jets to the airfield
+		populateAirFieldFromData(starterJets, airField);
+		selectUserChoice(airField);
 
 	}
 
 	private List<Jet> createJetsFromData(List<List<String>> list) {
 		List<Jet> newJets = new ArrayList<>();
-		
+
 		for (int i = 0; i < list.size(); i++) {
-			//model, speed, range, price
+			// model, speed, range, price
 			String typeOfJet = list.get(i).get(0);
 			String model = list.get(i).get(1);
 			Double speed = Double.parseDouble(list.get(i).get(2));
 			Integer range = Integer.parseInt(list.get(i).get(3));
 			Long price = Long.parseLong(list.get(i).get(4));
-			
-			switch(typeOfJet) {
+
+			switch (typeOfJet) {
 			case "TankerJet":
 				newJets.add(new TankerJet(model, speed, range, price));
+				continue;
 			case "FighterJet":
 				newJets.add(new FighterJet(model, speed, range, price));
+				continue;
 			case "JetImpl":
 				newJets.add(new JetImpl(model, speed, range, price));
+				continue;
 			}
 		}
-		
+
 		return newJets;
 	}
 
@@ -66,9 +75,9 @@ public class JetsApplication {
 			String line;
 			while ((line = bufIn.readLine()) != null) {
 				String[] splitLine = line.split(", ");
-				
+
 				List<String> temp = Arrays.asList(splitLine);
-				if(temp.size() > 1) {
+				if (temp.size() > 1) {
 					jetInfo.add(temp);
 				}
 			}
@@ -79,4 +88,77 @@ public class JetsApplication {
 		return jetInfo;
 	}
 
+	private void populateAirFieldFromData(List<Jet> jetsList, AirField airfield) {
+		airfield.addListOfJets(jetsList);
+	}
+
+	private void presentUserChoiceMenu() {
+		System.out.println("1) List fleet");
+		System.out.println("2) Fly all jets");
+		System.out.println("3) View fastest jet");
+		System.out.println("4) View jet with longest range");
+		System.out.println("5) Fuel up the fleet");
+		System.out.println("6) Dogfight!");
+		System.out.println("7) Add a jet to fleet");
+		System.out.println("8) Remove a jet from fleet");
+		System.out.println("9) Quit Program");
+	}
+
+	private void selectUserChoice(AirField airfield) {
+		int choice = 0;
+		boolean isRunning = true;
+		while (isRunning) {
+			//Show user Choice menu
+			presentUserChoiceMenu();
+			//get user choice validate input
+			choice = getUserSelection(input);
+			switch (choice) {
+			case 1:
+				airfield.listAllJetsInAirField();
+				break;
+			case 2:
+				break;
+			case 3:
+				break;
+			case 4:
+				break;
+			case 5:
+				break;
+			case 6:
+				break;
+			case 7:
+				break;
+			case 8:
+				break;
+			case 9:
+				System.out.println("Thank you for using the app.");
+				System.out.println("Good bye");
+				isRunning = false;
+				break;
+			}
+			
+		}
+	}
+
+	private int getUserSelection(Scanner input) {
+		int userInput = -1;
+		boolean isInvalid = true;
+		while (isInvalid) {
+			
+			try {
+				userInput = input.nextInt();
+				if (userInput > 0 && userInput < 10) {
+					isInvalid = false;
+					return userInput;
+				} else {
+					System.out.println("Please enter 1-9");
+				}
+			} catch (InputMismatchException e) {
+				System.out.println("Invalid input type. Please enter 1-9");
+				input.nextLine();
+				continue;
+			}
+		}
+		return userInput;
+	}
 }

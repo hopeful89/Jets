@@ -3,24 +3,47 @@ package com.skilldistillery.jets.entity;
 public abstract class Jet {
 
 	public static final double machSpeed = 767.269;
+	public static int numCreated = 1;
+	private int tailNumber;
 	private String model;
 	private double speed;
 	private int range;
 	private long price;
 
+
 	public Jet(String model, double speed, int range, long price) {
 		super();
+		this.tailNumber = numCreated;
 		this.model = model;
 		this.speed = speed;
 		this.range = range;
 		this.price = price;
+		numCreated++;
 	}
+
+
+	@Override
+	public String toString() {
+		return "Jet [tailNumber=" + tailNumber + ", model=" + model + ", speed=" + speed + ", range=" + range
+				+ ", price=" + price + "]";
+	}
+
 
 	public abstract void fly();
 
 	public String getModel() {
 		return model;
 	}
+
+	public int getTailNumber() {
+		return tailNumber;
+	}
+
+
+	public void setTailNumber(int tailNumber) {
+		this.tailNumber = tailNumber;
+	}
+
 
 	public void setModel(String model) {
 		this.model = model;
@@ -54,6 +77,7 @@ public abstract class Jet {
 		return speed / machSpeed;
 	}
 
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -64,8 +88,10 @@ public abstract class Jet {
 		long temp;
 		temp = Double.doubleToLongBits(speed);
 		result = prime * result + (int) (temp ^ (temp >>> 32));
+		result = prime * result + tailNumber;
 		return result;
 	}
+
 
 	@Override
 	public boolean equals(Object obj) {
@@ -87,6 +113,13 @@ public abstract class Jet {
 			return false;
 		if (Double.doubleToLongBits(speed) != Double.doubleToLongBits(other.speed))
 			return false;
+		if (tailNumber != other.tailNumber)
+			return false;
 		return true;
 	}
+
+
+
+
+	
 }

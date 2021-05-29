@@ -15,4 +15,13 @@ public class TankerJet extends Jet implements IsATanker{
 		System.out.println("Lets go boys...dump it out...fill 'em up!");
 	}
 
+	@Override
+	public String toString() {
+		return "TankerJet [getModel()=" + getModel() + ", getTailNumber()="
+				+ getTailNumber() + ", getSpeed()=" + getSpeed() + ", getRange()=" + getRange() + ", getPrice()="
+				+ getPrice() + "]";
+	}
+
+
+
 }

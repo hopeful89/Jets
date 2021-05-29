@@ -11,4 +11,13 @@ public class JetImpl extends Jet {
 		System.out.println("Ladies and Gentleman this is your captain speaking.  Prepare for a bumpy ride!");
 	}
 
+	@Override
+	public String toString() {
+		return "JetImpl [getModel()=" + getModel() + ", getTailNumber()="
+				+ getTailNumber() + ", getSpeed()=" + getSpeed() + ", getRange()=" + getRange() + ", getPrice()="
+				+ getPrice() + "]";
+	}
+
+
+
 }

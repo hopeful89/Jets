@@ -24,6 +24,7 @@ public class JetsApplication {
 	public static void main(String[] args) {
 		JetsApplication app = new JetsApplication();
 		app.start();
+		app.input.close();
 	}
 
 	private void start() {
@@ -106,19 +107,19 @@ public class JetsApplication {
 	}
 
 	private void selectUserChoice(AirField airfield) {
-		//User choice in menus
+		// User choice in menus
 		int choice = 0;
-		//While menu is running
+		// While menu is running
 		boolean isRunning = true;
-		
+
 		while (isRunning) {
-			//Show user Choice menu
+			// Show user Choice menu
 			presentUserChoiceMenu();
-			//get user choice validate input
-			choice = getUserSelection(input);
-			//Create Iterator for looping conditions
+			// get user choice validate input
+			choice = getUserSelection(input, 1, 9);
+			// Create Iterator for looping conditions
 			Iterator<Jet> it = createJetIterator(airfield);
-			
+
 			switch (choice) {
 			case 1:
 				airfield.listAllJetsInAirField();
@@ -139,8 +140,10 @@ public class JetsApplication {
 				dogFight(it);
 				break;
 			case 7:
+				userRequestAddJet(input, airfield);
 				break;
 			case 8:
+				userRequestRemoveJet(input, airfield);
 				break;
 			case 9:
 				System.out.println("Thank you for using the app.");
@@ -148,55 +151,180 @@ public class JetsApplication {
 				isRunning = false;
 				break;
 			}
-			
+
 		}
 	}
 
-	private int getUserSelection(Scanner input) {
+
+
+	private int getUserSelection(Scanner input, int startNumber, int stopNumber) {
 		int userInput = -1;
 		boolean isInvalid = true;
 		while (isInvalid) {
-			
+			System.out.println();
+			System.out.print("What is your choice: ");
 			try {
 				userInput = input.nextInt();
-				if (userInput > 0 && userInput < 10) {
+				if (userInput >= startNumber && userInput <= stopNumber) {
 					isInvalid = false;
+					input.nextLine();
 					return userInput;
 				} else {
-					System.out.println("Please enter 1-9");
+					System.out.println("Please enter " + startNumber + "-" + stopNumber);
 				}
 			} catch (InputMismatchException e) {
-				System.out.println("Invalid input type. Please enter 1-9");
+				System.out.println("Invalid input type. Please enter " + startNumber + "-" + stopNumber);
 				input.nextLine();
 				continue;
 			}
 		}
 		return userInput;
 	}
-	
-	private Iterator<Jet> createJetIterator(AirField airField){
+
+	private Iterator<Jet> createJetIterator(AirField airField) {
 		List<Jet> getJets = airField.getJets();
 		Iterator<Jet> it = getJets.iterator();
-		
+
 		return it;
 	}
-	
+
 	private void fuelUpTheFleet(Iterator<Jet> it) {
-		while(it.hasNext()) {
+		while (it.hasNext()) {
 			Jet aJet = it.next();
-			if(aJet instanceof TankerJet) {
+			if (aJet instanceof TankerJet) {
 				((TankerJet) aJet).refuel();
 				System.out.println();
 			}
 		}
 	}
-	
+
 	private void dogFight(Iterator<Jet> it) {
-		while(it.hasNext()) {
+		while (it.hasNext()) {
 			Jet aJet = it.next();
-			if(aJet instanceof FighterJet) {
+			if (aJet instanceof FighterJet) {
 				((FighterJet) aJet).fight();
 				System.out.println();
+			}
+		}
+	}
+
+	private void userRequestAddJet(Scanner input, AirField airField) {
+		
+		while(true) {
+			System.out.println("Create a jet?");
+			System.out.println();
+			System.out.println("Y|Yes|N|No");
+			System.out.println();
+			String createJet = input.nextLine();
+			
+			if(createJet.contains("N") || createJet.contains("n")) {
+				System.out.println("back to main menu");
+				break;
+			}
+		
+			System.out.println("Please choose what kind of jet: ");
+			System.out.println("1) JetImpl");
+			System.out.println("2) FighterJet");
+			System.out.println("3) TankerJet");
+		
+			//Get user plane to create, used generic list for multiple return value types
+			int userChoicePlaneType = getUserSelection(input, 1, 3);
+			List userData = getUserJetData(input);
+			
+			//Create Jet return it to be added to airfield
+			//Could have just passed in airfield and added it at creation
+			Jet userJet = userCreatedJetMaker(userChoicePlaneType, userData);
+			airField.addJetToAirField(userJet);
+		}
+
+	}
+
+	private List getUserJetData(Scanner input) {
+		List userData = new ArrayList();
+		Double speed = 0.0;
+		Integer range = 0;
+		Long price = (long) 0;
+
+		System.out.print("Please enter model: ");
+		userData.add(input.nextLine());
+		while (true) {
+
+			try {
+				if (speed == 0.0) {
+					System.out.print("\nPlease enter speed: ");
+					speed = input.nextDouble();
+					userData.add(speed);
+				}
+
+				if (range == 0) {
+					System.out.print("\nPlease enter range: ");
+					range = input.nextInt();
+					userData.add(range);
+				}
+
+				if (price == 0) {
+					System.out.print("\nPlease enter price: ");
+					price = input.nextLong();
+					input.nextLine();
+					userData.add(price);
+				}
+				break;
+			} catch (InputMismatchException e) {
+				System.out.println("Please enter numbers.");
+				input.nextLine();
+			}
+		}
+		return userData;
+	}
+
+	private Jet userCreatedJetMaker(int userChoice, List userData) {
+		Jet newJet;
+
+		// Cast generic objects to wrapper classes
+
+		String model = (String) userData.get(0);
+		Double speed = (Double) userData.get(1);
+		Integer range = (Integer) userData.get(2);
+		Long price = (Long) userData.get(3);
+
+		switch (userChoice) {
+		case 1:
+			newJet = new JetImpl(model, speed, range, price);
+			break;
+		case 2:
+			newJet = new FighterJet(model, speed, range, price);
+			break;
+		case 3:
+			newJet = new TankerJet(model, speed, range, price);
+			break;
+		default:
+			newJet = null;
+		}
+
+		return newJet;
+	}
+	
+	private void userRequestRemoveJet(Scanner input, AirField airfield) {
+		boolean notValid = true;
+		if(airField.getJets().size() != 0 ) {
+			int maxSize = Integer.MAX_VALUE;
+			airField.listAllJetsInAirField();
+			
+			while(notValid) {
+				System.out.print("Please Enter what Jet Tailnumber to remove: ");
+				int jetToRemove = getUserSelection(input, 1, maxSize);
+				
+				for (Jet jet : airfield.getJets()) {
+					if(jet.getTailNumber() == jetToRemove) {
+						airField.removeJetFromAirField(jet);
+						notValid = false;
+					}
+				}
+				if(notValid) {
+					System.out.println();
+					System.out.println("Tail number not found please try again!");
+					System.out.println();
+				}
 			}
 		}
 	}

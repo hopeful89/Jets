@@ -28,6 +28,8 @@ public class JetsApplication {
 	}
 
 	private void start() {
+		//Welcome message
+		intro();
 		// File name to read from
 		String fileName = "jets.txt";
 
@@ -36,11 +38,17 @@ public class JetsApplication {
 
 		// Instantiates a List of jets
 		List<Jet> starterJets = createJetsFromData(jetStartInfo);
-
+		
 		// Adds the starter jets to the airfield
 		populateAirFieldFromData(starterJets, airField);
 		selectUserChoice(airField);
 
+	}
+	
+	private void intro() {
+		System.out.println("*******************************");
+		System.out.println("Welcome to the Jets Application");
+		System.out.println("*******************************");
 	}
 
 	private List<Jet> createJetsFromData(List<List<String>> list) {
@@ -155,8 +163,6 @@ public class JetsApplication {
 		}
 	}
 
-
-
 	private int getUserSelection(Scanner input, int startNumber, int stopNumber) {
 		int userInput = -1;
 		boolean isInvalid = true;
@@ -229,18 +235,17 @@ public class JetsApplication {
 		
 			//Get user plane to create, used generic list for multiple return value types
 			int userChoicePlaneType = getUserSelection(input, 1, 3);
-			List userData = getUserJetData(input);
+			List<String> userData = getUserJetData(input);
 			
 			//Create Jet return it to be added to airfield
 			//Could have just passed in airfield and added it at creation
 			Jet userJet = userCreatedJetMaker(userChoicePlaneType, userData);
 			airField.addJetToAirField(userJet);
 		}
-
 	}
 
-	private List getUserJetData(Scanner input) {
-		List userData = new ArrayList();
+	private List<String> getUserJetData(Scanner input) {
+		List<String> userData = new ArrayList();
 		Double speed = 0.0;
 		Integer range = 0;
 		Long price = (long) 0;
@@ -253,20 +258,20 @@ public class JetsApplication {
 				if (speed == 0.0) {
 					System.out.print("\nPlease enter speed: ");
 					speed = input.nextDouble();
-					userData.add(speed);
+					userData.add(String.valueOf(speed));
 				}
 
 				if (range == 0) {
 					System.out.print("\nPlease enter range: ");
 					range = input.nextInt();
-					userData.add(range);
+					userData.add(String.valueOf(range));
 				}
 
 				if (price == 0) {
 					System.out.print("\nPlease enter price: ");
 					price = input.nextLong();
 					input.nextLine();
-					userData.add(price);
+					userData.add(String.valueOf(price));
 				}
 				break;
 			} catch (InputMismatchException e) {
@@ -277,16 +282,17 @@ public class JetsApplication {
 		return userData;
 	}
 
-	private Jet userCreatedJetMaker(int userChoice, List userData) {
+	private Jet userCreatedJetMaker(int userChoice, List<String> userData) {
 		Jet newJet;
 
-		// Cast generic objects to wrapper classes
+		// Parse Strings back to wrapper classes
 
-		String model = (String) userData.get(0);
-		Double speed = (Double) userData.get(1);
-		Integer range = (Integer) userData.get(2);
-		Long price = (Long) userData.get(3);
+		String model = userData.get(0);
+		Double speed = Double.parseDouble(userData.get(1));
+		Integer range = Integer.parseInt(userData.get(2));
+		Long price = Long.parseLong(userData.get(3));
 
+		//userChoice came from userRequestAddJet
 		switch (userChoice) {
 		case 1:
 			newJet = new JetImpl(model, speed, range, price);
@@ -306,26 +312,37 @@ public class JetsApplication {
 	
 	private void userRequestRemoveJet(Scanner input, AirField airfield) {
 		boolean notValid = true;
+		
+		//Verify Jets on airfield
 		if(airField.getJets().size() != 0 ) {
+			
 			int maxSize = Integer.MAX_VALUE;
+			//List out options of jets
 			airField.listAllJetsInAirField();
 			
 			while(notValid) {
 				System.out.print("Please Enter what Jet Tailnumber to remove: ");
 				int jetToRemove = getUserSelection(input, 1, maxSize);
 				
+				//Check Jet Tailnumbers for match 
 				for (Jet jet : airfield.getJets()) {
 					if(jet.getTailNumber() == jetToRemove) {
 						airField.removeJetFromAirField(jet);
 						notValid = false;
 					}
 				}
+				
+				//If Jet was not removed
 				if(notValid) {
 					System.out.println();
 					System.out.println("Tail number not found please try again!");
 					System.out.println();
 				}
 			}
+		}else {
+			System.out.println();
+			System.out.println("Airfield is empty add jets.");
+			System.out.println();
 		}
 	}
 }

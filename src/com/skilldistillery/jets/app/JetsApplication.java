@@ -28,7 +28,7 @@ public class JetsApplication {
 	}
 
 	private void start() {
-		//Welcome message
+		// Welcome message
 		intro();
 		// File name to read from
 		String fileName = "jets.txt";
@@ -38,13 +38,13 @@ public class JetsApplication {
 
 		// Instantiates a List of jets
 		List<Jet> starterJets = createJetsFromData(jetStartInfo);
-		
+
 		// Adds the starter jets to the airfield
-		populateAirFieldFromData(starterJets, airField);
-		selectUserChoice(airField);
+		populateAirFieldFromData(starterJets);
+		selectUserChoice();
 
 	}
-	
+
 	private void intro() {
 		System.out.println("*******************************");
 		System.out.println("Welcome to the Jets Application");
@@ -98,8 +98,8 @@ public class JetsApplication {
 		return jetInfo;
 	}
 
-	private void populateAirFieldFromData(List<Jet> jetsList, AirField airfield) {
-		airfield.addListOfJets(jetsList);
+	private void populateAirFieldFromData(List<Jet> jetsList) {
+		airField.addListOfJets(jetsList);
 	}
 
 	private void presentUserChoiceMenu() {
@@ -111,10 +111,11 @@ public class JetsApplication {
 		System.out.println("6) Dogfight!");
 		System.out.println("7) Add a jet to fleet");
 		System.out.println("8) Remove a jet from fleet");
-		System.out.println("9) Quit Program");
+		System.out.println("9) Fly individual jet");
+		System.out.println("10) Quit Program");
 	}
 
-	private void selectUserChoice(AirField airfield) {
+	private void selectUserChoice() {
 		// User choice in menus
 		int choice = 0;
 		// While menu is running
@@ -124,22 +125,22 @@ public class JetsApplication {
 			// Show user Choice menu
 			presentUserChoiceMenu();
 			// get user choice validate input
-			choice = getUserSelection(input, 1, 9);
+			choice = getUserSelection(input, 1, 10);
 			// Create Iterator for looping conditions
-			Iterator<Jet> it = createJetIterator(airfield);
+			Iterator<Jet> it = createJetIterator();
 
 			switch (choice) {
 			case 1:
-				airfield.listAllJetsInAirField();
+				airField.listAllJetsInAirField();
 				break;
 			case 2:
-				airfield.flyAllJets();
+				airField.flyAllJets();
 				break;
 			case 3:
-				airfield.fastestJet();
+				airField.fastestJet();
 				break;
 			case 4:
-				airfield.longestRangeJet();
+				airField.longestRangeJet();
 				break;
 			case 5:
 				fuelUpTheFleet(it);
@@ -148,18 +149,20 @@ public class JetsApplication {
 				dogFight(it);
 				break;
 			case 7:
-				userRequestAddJet(input, airfield);
+				userRequestAddJet(input);
 				break;
 			case 8:
-				userRequestRemoveJet(input, airfield);
+				userRequestRemoveJet(input);
 				break;
 			case 9:
+				userRequestSingleJetFlight(input, createJetIterator());
+				break;
+			case 10:
 				System.out.println("Thank you for using the app.");
 				System.out.println("Good bye");
 				isRunning = false;
 				break;
 			}
-
 		}
 	}
 
@@ -187,7 +190,7 @@ public class JetsApplication {
 		return userInput;
 	}
 
-	private Iterator<Jet> createJetIterator(AirField airField) {
+	private Iterator<Jet> createJetIterator() {
 		List<Jet> getJets = airField.getJets();
 		Iterator<Jet> it = getJets.iterator();
 
@@ -214,31 +217,31 @@ public class JetsApplication {
 		}
 	}
 
-	private void userRequestAddJet(Scanner input, AirField airField) {
-		
-		while(true) {
+	private void userRequestAddJet(Scanner input) {
+
+		while (true) {
 			System.out.println("Create a jet?");
 			System.out.println();
 			System.out.println("Y|Yes|N|No");
 			System.out.println();
 			String createJet = input.nextLine();
-			
-			if(createJet.contains("N") || createJet.contains("n")) {
+
+			if (createJet.contains("N") || createJet.contains("n")) {
 				System.out.println("back to main menu");
 				break;
 			}
-		
+
 			System.out.println("Please choose what kind of jet: ");
 			System.out.println("1) JetImpl");
 			System.out.println("2) FighterJet");
 			System.out.println("3) TankerJet");
-		
-			//Get user plane to create, used generic list for multiple return value types
+
+			// Get user plane to create, used generic list for multiple return value types
 			int userChoicePlaneType = getUserSelection(input, 1, 3);
 			List<String> userData = getUserJetData(input);
-			
-			//Create Jet return it to be added to airfield
-			//Could have just passed in airfield and added it at creation
+
+			// Create Jet return it to be added to airfield
+			// Could have just passed in airfield and added it at creation
 			Jet userJet = userCreatedJetMaker(userChoicePlaneType, userData);
 			airField.addJetToAirField(userJet);
 		}
@@ -283,6 +286,7 @@ public class JetsApplication {
 	}
 
 	private Jet userCreatedJetMaker(int userChoice, List<String> userData) {
+
 		Jet newJet;
 
 		// Parse Strings back to wrapper classes
@@ -292,7 +296,7 @@ public class JetsApplication {
 		Integer range = Integer.parseInt(userData.get(2));
 		Long price = Long.parseLong(userData.get(3));
 
-		//userChoice came from userRequestAddJet
+		// userChoice came from userRequestAddJet
 		switch (userChoice) {
 		case 1:
 			newJet = new JetImpl(model, speed, range, price);
@@ -309,40 +313,64 @@ public class JetsApplication {
 
 		return newJet;
 	}
-	
-	private void userRequestRemoveJet(Scanner input, AirField airfield) {
+
+	private void userRequestRemoveJet(Scanner input) {
 		boolean notValid = true;
-		
-		//Verify Jets on airfield
-		if(airField.getJets().size() != 0 ) {
-			
+
+		// Verify Jets on airfield
+		if (airField.getJets().size() != 0) {
+
 			int maxSize = Integer.MAX_VALUE;
-			//List out options of jets
+			// List out options of jets
 			airField.listAllJetsInAirField();
-			
-			while(notValid) {
+
+			while (notValid) {
 				System.out.print("Please Enter what Jet Tailnumber to remove: ");
 				int jetToRemove = getUserSelection(input, 1, maxSize);
-				
-				//Check Jet Tailnumbers for match 
-				for (Jet jet : airfield.getJets()) {
-					if(jet.getTailNumber() == jetToRemove) {
+
+				// Check Jet Tailnumbers for match
+				for (Jet jet : airField.getJets()) {
+					if (jet.getTailNumber() == jetToRemove) {
 						airField.removeJetFromAirField(jet);
 						notValid = false;
 					}
 				}
-				
-				//If Jet was not removed
-				if(notValid) {
+
+				// If Jet was not removed
+				if (notValid) {
 					System.out.println();
 					System.out.println("Tail number not found please try again!");
 					System.out.println();
 				}
 			}
-		}else {
+		} else {
 			System.out.println();
 			System.out.println("Airfield is empty add jets.");
 			System.out.println();
 		}
+	}
+
+	public void userRequestSingleJetFlight(Scanner input, Iterator<Jet> it) {
+
+		if (airField.getJets().size() != 0) {
+
+			airField.listAllJetsInAirField();
+			int numJets = airField.getJets().size();
+
+			System.out.println("What jet would you like to fly?");
+			System.out.print("Please enter tailnumber: ");
+			int userSelectedTailNumber = getUserSelection(input, 1, numJets);
+			
+			while(it.hasNext()) {
+				Jet temp = it.next();
+				if(temp.getTailNumber() == userSelectedTailNumber) {
+					temp.fly();
+					System.out.println();
+				}
+			}
+		}else {
+			System.out.println("Please add jets to airfield");
+		}
+
 	}
 }

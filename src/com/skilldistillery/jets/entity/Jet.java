@@ -9,6 +9,7 @@ public abstract class Jet {
 	private double speed;
 	private int range;
 	private long price;
+	private Pilot pilot;
 
 	public Jet(String model, double speed, int range, long price) {
 		super();
@@ -17,6 +18,7 @@ public abstract class Jet {
 		this.speed = speed;
 		this.range = range;
 		this.price = price;
+		this.pilot = new Pilot();
 		numCreated++;
 	}
 
@@ -24,6 +26,16 @@ public abstract class Jet {
 	public String toString() {
 		return "Jet [tailNumber=" + tailNumber + ", model=" + model + ", speed=" + speed + ", range=" + range
 				+ ", price=" + price + "]";
+	}
+	
+	
+
+	public Pilot getPilot() {
+		return pilot;
+	}
+
+	public void setPilot(Pilot pilot) {
+		this.pilot = pilot;
 	}
 
 	public abstract void fly();
@@ -81,6 +93,7 @@ public abstract class Jet {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((model == null) ? 0 : model.hashCode());
+		result = prime * result + ((pilot == null) ? 0 : pilot.hashCode());
 		result = prime * result + (int) (price ^ (price >>> 32));
 		result = prime * result + range;
 		long temp;
@@ -104,6 +117,11 @@ public abstract class Jet {
 				return false;
 		} else if (!model.equals(other.model))
 			return false;
+		if (pilot == null) {
+			if (other.pilot != null)
+				return false;
+		} else if (!pilot.equals(other.pilot))
+			return false;
 		if (price != other.price)
 			return false;
 		if (range != other.range)
@@ -114,5 +132,7 @@ public abstract class Jet {
 			return false;
 		return true;
 	}
+
+	
 
 }

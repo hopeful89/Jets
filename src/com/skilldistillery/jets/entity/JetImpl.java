@@ -8,14 +8,13 @@ public class JetImpl extends Jet {
 
 	@Override
 	public void fly() {
-		System.out.println("Ladies and Gentleman this is your captain speaking.  Prepare for a bumpy ride!");
+		System.out.println(getPilot() + " Ladies and Gentleman this is your captain speaking.  Prepare for a bumpy ride!");
 	}
 
 	@Override
 	public String toString() {
-		return "JetImpl [getModel()=" + getModel() + ", getTailNumber()="
-				+ getTailNumber() + ", getSpeed()=" + getSpeed() + ", getRange()=" + getRange() + ", getPrice()="
-				+ getPrice() + "]";
+		return  getClass().getSimpleName() + " || Pilot: " + getPilot() +", model: " + getModel() + ", Tailnumber: " + getTailNumber() + ", Speed: "
+				+ getSpeed() + ", Range: " + getRange() + ", Price" + getPrice() + ".";
 	}
 
 

@@ -8,7 +8,7 @@ public class TankerJet extends Jet implements IsATanker{
 
 	@Override
 	public void fly() {
-		System.out.println("I love being able to fly and not give out my fuel.");
+		System.out.println(getPilot() + " I love being able to fly and not give out my fuel.");
 	}
 
 	public void refuel() {
@@ -17,9 +17,8 @@ public class TankerJet extends Jet implements IsATanker{
 
 	@Override
 	public String toString() {
-		return "TankerJet [getModel()=" + getModel() + ", getTailNumber()="
-				+ getTailNumber() + ", getSpeed()=" + getSpeed() + ", getRange()=" + getRange() + ", getPrice()="
-				+ getPrice() + "]";
+		return  getClass().getSimpleName() + " || Pilot: " + getPilot() +", model: " + getModel() + ", Tailnumber: " + getTailNumber() + ", Speed: "
+				+ getSpeed() + ", Range: " + getRange() + ", Price" + getPrice() + ".";
 	}
 
 

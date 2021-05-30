@@ -8,7 +8,7 @@ public class FighterJet extends Jet implements CombatReady {
 
 	@Override
 	public void fly() {
-		System.out.println("Keep the formation tight. Begin verticle climb.");
+		System.out.println(getPilot() + " Keep the formation tight. Begin verticle climb.");
 	}
 
 	public void fight() {
@@ -18,8 +18,8 @@ public class FighterJet extends Jet implements CombatReady {
 
 	@Override
 	public String toString() {
-		return "FighterJet [getModel()=" + getModel() + ", getTailNumber()=" + getTailNumber() + ", getSpeed()="
-				+ getSpeed() + ", getRange()=" + getRange() + ", getPrice()=" + getPrice() + "]";
+		return  getClass().getSimpleName() + " || Pilot: " + getPilot() +", model: " + getModel() + ", Tailnumber: " + getTailNumber() + ", Speed: "
+				+ getSpeed() + ", Range: " + getRange() + ", Price" + getPrice() + ".";
 	}
 
 

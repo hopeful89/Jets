@@ -8,11 +8,11 @@ public class FighterJet extends Jet implements CombatReady {
 
 	@Override
 	public void fly() {
-		System.out.println(getPilot() + " Keep the formation tight. Begin verticle climb.");
+		System.out.println(getPilot() + " " + getModel() + "Keep the formation tight. Begin verticle climb.");
 	}
 
 	public void fight() {
-		System.out.println("Im going to pull the airbrake and they will fly right by!");
+		System.out.println(getPilot() + ": Im going to pull the airbrake and they will fly right by!");
 		System.out.println("TailNumber: " + getTailNumber() + " Successfully defeated the enemy requesting tower fly by..");
 	}
 

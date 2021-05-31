@@ -8,7 +8,7 @@ public class TankerJet extends Jet implements IsATanker{
 
 	@Override
 	public void fly() {
-		System.out.println(getPilot() + " I love being able to fly and not give out my fuel.");
+		System.out.println(getPilot() + " " + getModel() + " I love being able to fly and not give out my fuel.");
 	}
 
 	public void refuel() {

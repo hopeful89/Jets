@@ -155,7 +155,7 @@ public class JetsApplication {
 				userRequestRemoveJet(input);
 				break;
 			case 9:
-				userRequestSingleJetFlight(input, createJetIterator());
+				userRequestSingleJetFlight(input);
 				break;
 			case 10:
 				System.out.println("Thank you for using the app.");
@@ -248,7 +248,7 @@ public class JetsApplication {
 	}
 
 	private List<String> getUserJetData(Scanner input) {
-		List<String> userData = new ArrayList();
+		List<String> userData = new ArrayList<>();
 		Double speed = 0.0;
 		Integer range = 0;
 		Long price = (long) 0;
@@ -350,21 +350,31 @@ public class JetsApplication {
 		}
 	}
 
-	public void userRequestSingleJetFlight(Scanner input, Iterator<Jet> it) {
+	public void userRequestSingleJetFlight(Scanner input) {
 
 		if (airField.getJets().size() != 0) {
-
+			boolean isValid = false;
 			airField.listAllJetsInAirField();
-			int numJets = airField.getJets().size();
+			int maxNum = Integer.MAX_VALUE;
 
-			System.out.println("What jet would you like to fly?");
-			System.out.print("Please enter tailnumber: ");
-			int userSelectedTailNumber = getUserSelection(input, 1, numJets);
-			
-			while(it.hasNext()) {
-				Jet temp = it.next();
-				if(temp.getTailNumber() == userSelectedTailNumber) {
-					temp.fly();
+			while(true && isValid == false) {
+				System.out.println("What jet would you like to fly?");
+				System.out.print("Please enter tailnumber: ");
+	
+				int userSelectedTailNumber = getUserSelection(input, 1, maxNum);
+				
+				for(Jet jet : airField.getJets()) {
+					
+					if(jet.getTailNumber() == userSelectedTailNumber) {
+						jet.fly();
+						System.out.println();
+						isValid = true;
+						break;
+					}
+				}
+				if(isValid != true) {
+					System.out.println();
+					System.out.println("Jet not found. Please enter valid tailnumber");
 					System.out.println();
 				}
 			}

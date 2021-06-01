@@ -2,7 +2,9 @@ package com.skilldistillery.jets.app;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.InputMismatchException;
@@ -93,6 +95,8 @@ public class JetsApplication {
 			}
 		} catch (IOException e) {
 			System.err.println(e);
+		} catch (NullPointerException e) {
+			System.out.println("No File Found To load");
 		}
 
 		return jetInfo;
@@ -112,7 +116,9 @@ public class JetsApplication {
 		System.out.println("7) Add a jet to fleet");
 		System.out.println("8) Remove a jet from fleet");
 		System.out.println("9) Fly individual jet");
-		System.out.println("10) Quit Program");
+		System.out.println("10) Save Airfield");
+		System.out.println("11) Load Airfield");
+		System.out.println("12) Quit Program");
 	}
 
 	private void selectUserChoice() {
@@ -125,7 +131,7 @@ public class JetsApplication {
 			// Show user Choice menu
 			presentUserChoiceMenu();
 			// get user choice validate input
-			choice = getUserSelection(input, 1, 10);
+			choice = getUserSelection(1, 12);
 			// Create Iterator for looping conditions
 			Iterator<Jet> it = createJetIterator();
 
@@ -149,15 +155,23 @@ public class JetsApplication {
 				dogFight(it);
 				break;
 			case 7:
-				userRequestAddJet(input);
+				userRequestAddJet();
 				break;
 			case 8:
-				userRequestRemoveJet(input);
+				userRequestRemoveJet();
 				break;
 			case 9:
-				userRequestSingleJetFlight(input);
+				userRequestSingleJetFlight();
 				break;
 			case 10:
+				saveAirFieldToFile();
+				break;
+			case 11:
+				List<List<String>> fileJets = pullJetInfoFromFile(loadAirFieldFromFile());
+				List<Jet> jetObjects = createJetsFromData(fileJets);
+				populateAirFieldFromData(jetObjects);
+				break;
+			case 12:
 				System.out.println("Thank you for using the app.");
 				System.out.println("Good bye");
 				isRunning = false;
@@ -166,7 +180,7 @@ public class JetsApplication {
 		}
 	}
 
-	private int getUserSelection(Scanner input, int startNumber, int stopNumber) {
+	private int getUserSelection(int startNumber, int stopNumber) {
 		int userInput = -1;
 		boolean isInvalid = true;
 		while (isInvalid) {
@@ -217,7 +231,7 @@ public class JetsApplication {
 		}
 	}
 
-	private void userRequestAddJet(Scanner input) {
+	private void userRequestAddJet() {
 
 		while (true) {
 			System.out.println("Create a jet?");
@@ -237,8 +251,8 @@ public class JetsApplication {
 			System.out.println("3) TankerJet");
 
 			// Get user plane to create, used generic list for multiple return value types
-			int userChoicePlaneType = getUserSelection(input, 1, 3);
-			List<String> userData = getUserJetData(input);
+			int userChoicePlaneType = getUserSelection(1, 3);
+			List<String> userData = getUserJetData();
 
 			// Create Jet return it to be added to airfield
 			// Could have just passed in airfield and added it at creation
@@ -247,7 +261,7 @@ public class JetsApplication {
 		}
 	}
 
-	private List<String> getUserJetData(Scanner input) {
+	private List<String> getUserJetData() {
 		List<String> userData = new ArrayList<>();
 		Double speed = 0.0;
 		Integer range = 0;
@@ -314,7 +328,7 @@ public class JetsApplication {
 		return newJet;
 	}
 
-	private void userRequestRemoveJet(Scanner input) {
+	private void userRequestRemoveJet() {
 		boolean notValid = true;
 
 		// Verify Jets on airfield
@@ -326,7 +340,7 @@ public class JetsApplication {
 
 			while (notValid) {
 				System.out.print("Please Enter what Jet Tailnumber to remove: ");
-				int jetToRemove = getUserSelection(input, 1, maxSize);
+				int jetToRemove = getUserSelection(1, maxSize);
 
 				// Check Jet Tailnumbers for match
 				for (Jet jet : airField.getJets()) {
@@ -350,37 +364,77 @@ public class JetsApplication {
 		}
 	}
 
-	public void userRequestSingleJetFlight(Scanner input) {
+	public void userRequestSingleJetFlight() {
 
 		if (airField.getJets().size() != 0) {
 			boolean isValid = false;
 			airField.listAllJetsInAirField();
 			int maxNum = Integer.MAX_VALUE;
 
-			while(true && isValid == false) {
+			while (true && isValid == false) {
 				System.out.println("What jet would you like to fly?");
 				System.out.print("Please enter tailnumber: ");
-	
-				int userSelectedTailNumber = getUserSelection(input, 1, maxNum);
-				
-				for(Jet jet : airField.getJets()) {
-					
-					if(jet.getTailNumber() == userSelectedTailNumber) {
+
+				int userSelectedTailNumber = getUserSelection(1, maxNum);
+
+				for (Jet jet : airField.getJets()) {
+
+					if (jet.getTailNumber() == userSelectedTailNumber) {
 						jet.fly();
 						System.out.println();
 						isValid = true;
 						break;
 					}
 				}
-				if(isValid != true) {
+				if (isValid != true) {
 					System.out.println();
 					System.out.println("Jet not found. Please enter valid tailnumber");
 					System.out.println();
 				}
 			}
-		}else {
+		} else {
 			System.out.println("Please add jets to airfield");
 		}
+	}
 
+	public void saveAirFieldToFile() {
+		System.out.print("Please enter save file name NO extension: ");
+		String fileName = input.nextLine();
+		try {
+			FileWriter fw = new FileWriter(fileName + ".txt");
+			PrintWriter pw = new PrintWriter(fw);
+			for (Jet jet : airField.getJets()) {
+				StringBuilder string = new StringBuilder();
+				string.append(jet.getClass().getSimpleName() + ",").append(" " + jet.getModel() + ",")
+						.append(" " + jet.getSpeed() + ",").append(" " + jet.getRange() + ",")
+						.append(" " + jet.getPrice());
+				pw.println(string);
+			}
+			System.out.println("You have saved to: " + fileName + ".txt");
+			System.out.println();
+			pw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public String loadAirFieldFromFile() {
+		System.out.print("Please input file name NO extension: ");
+		String fileName = input.nextLine() + ".txt";
+		try (BufferedReader bufIn = new BufferedReader(new FileReader(fileName))) {
+			bufIn.readLine();
+			System.out.println();
+			System.out.println("Loading File. " + fileName);
+			System.out.println();
+			airField.removeAllJets();
+			bufIn.close();
+			return fileName;
+
+		} catch (IOException e) {
+			System.out.println();
+			System.out.println("File not found.");
+			System.out.println();
+			return null;
+		} 
 	}
 }

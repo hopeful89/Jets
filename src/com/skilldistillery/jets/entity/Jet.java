@@ -25,7 +25,7 @@ public abstract class Jet {
 	@Override
 	public String toString() {
 		return "Jet [tailNumber=" + tailNumber + ", model=" + model + ", speed=" + speed + ", range=" + range
-				+ ", price=" + price + "]";
+				+ ", price= " + price + "]";
 	}
 	
 	

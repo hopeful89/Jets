@@ -24,6 +24,10 @@ This is a console project.  To run in eclipse please use the run button.
 
 You can quit the program at any time through the menu.
 
+* In order to use the load command I have included a "jets2.txt"
+* When selecting do not included your extension.
+* Otherwise add your jets as prompted and save the file to a name of your choice no ext.
+
 
 ### Lessons Learned
 

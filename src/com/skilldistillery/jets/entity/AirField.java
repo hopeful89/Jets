@@ -63,6 +63,10 @@ public class AirField {
 		System.out.println("You have removed " + jet.getModel() + " Tailnumber: " + jet.getTailNumber());
 		System.out.println();
 	}
+	
+	public void removeAllJets() {
+		jets.clear();
+	}
 
 	public void listAllJetsInAirField() {
 		System.out.println("************** ALL JETS ON AIRFIELD **************");

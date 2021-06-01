@@ -18,7 +18,7 @@ public class TankerJet extends Jet implements IsATanker{
 	@Override
 	public String toString() {
 		return  getClass().getSimpleName() + " || Pilot: " + getPilot() +", model: " + getModel() + ", Tailnumber: " + getTailNumber() + ", Speed: "
-				+ getSpeed() + ", Range: " + getRange() + ", Price" + getPrice() + ".";
+				+ getSpeed() + ", Range: " + getRange() + ", Price " + getPrice() + ".";
 	}
 
 
